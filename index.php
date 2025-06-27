@@ -2,7 +2,7 @@
 include 'db.php'; // Make sure the path is correct
 
 // Fetch jerseys from database
-$result = $conn->query("SELECT name, price, image_path FROM jerseys ORDER BY id DESC");
+$result = $conn->query("SELECT name, price,category, image_path FROM jerseys ORDER BY id DESC");
 
 $jerseys = [];
 
@@ -11,6 +11,7 @@ if ($result && $result->num_rows > 0) {
         $jerseys[] = [
             'name' => $row['name'],
             'price' => $row['price'],
+            'category' => $row['category'],
             'image' => $row['image_path'], // Should be like "uploads/image.jpg"
         ];
     }
@@ -132,10 +133,45 @@ if ($result && $result->num_rows > 0) {
         }
     </style>
 </head>
+<script>
+    // Function to show temporary message
+    function showLoginMessage() {
+        // Create message container
+        const message = document.createElement('div');
+        message.textContent = "You have to create an account and sign in before making an order.";
+        message.style.position = 'fixed';
+        message.style.top = '20px';
+        message.style.left = '50%';
+        message.style.transform = 'translateX(-50%)';
+        message.style.backgroundColor = '#e74c3c';
+        message.style.color = 'white';
+        message.style.padding = '15px 25px';
+        message.style.borderRadius = '6px';
+        message.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+        message.style.zIndex = 2000;
+        message.style.fontWeight = 'bold';
+
+        document.body.appendChild(message);
+
+        // Remove message after 3 seconds
+        setTimeout(() => {
+            message.remove();
+        }, 3000);
+    }
+
+    // Attach click event to all buy buttons
+    document.addEventListener('DOMContentLoaded', () => {
+        const buyButtons = document.querySelectorAll('.buy-btn');
+        buyButtons.forEach(button => {
+            button.addEventListener('click', showLoginMessage);
+        });
+    });
+</script>
+
 <body>
 
 <header>
-    <div>⚽️ European Football Jersey Store</div>
+    <div>⚽️ JAIRO SPORTS WEAR</div>
     <a href="login.php" class="logout-btn">Login</a>
 </header>
 
@@ -146,6 +182,7 @@ if ($result && $result->num_rows > 0) {
                 <img src="<?php echo htmlspecialchars($jersey['image']); ?>" alt="<?php echo htmlspecialchars($jersey['name']); ?>" />
                 <h3><?php echo htmlspecialchars($jersey['name']); ?></h3>
                 <div class="price">KSH <?php echo number_format($jersey['price'], 2); ?></div>
+                <h3><?php echo htmlspecialchars($jersey['category']); ?></h3>
                 <div class="buttons">
                     <button class="cart-btn" disabled>Add to Cart</button>
                     <button class="buy-btn">Buy Now</button>

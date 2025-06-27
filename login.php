@@ -2,18 +2,11 @@
 session_start();
 include 'db.php';
 
-
-
-
-
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $conn->real_escape_string($_POST['username']);
     $password = $_POST['password'];
-    $hashed = password_hash($password, PASSWORD_DEFAULT);
-
-    
 
     $result = $conn->query("SELECT * FROM users WHERE username = '$username'");
     $user = $result->fetch_assoc();
@@ -41,20 +34,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Login | Jerzy Store</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #ecf0f1;
+            background: url('images/jairo.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
+            min-height: 100vh;
         }
 
         .login-container {
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.95);
             padding: 40px 30px;
             border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 400px;
         }
@@ -99,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .footer {
             text-align: center;
             margin-top: 20px;
+            font-size: 0.95em;
         }
 
         .footer a {
@@ -114,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
 <div class="login-container">
-    <h2>🔐 Login to Jerzy Store</h2>
+    <h2>🔐 LOGIN TO JAIRO SPORTS WEAR</h2>
 
     <?php if ($error): ?>
         <p class="error"><?= htmlspecialchars($error) ?></p>
@@ -127,7 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <div class="footer">
-        Don't have an account? <a href="register.php">Register</a>
+        <p>Don't have an account? <a href="register.php">Sign up</a></p>
+        <p><a href="forgot_password.php">Forgot Password?</a></p>
     </div>
 </div>
 

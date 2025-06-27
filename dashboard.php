@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 }
 
 // Fetch jerseys from database
-$result = $conn->query("SELECT name, price, image_path FROM jerseys ORDER BY id DESC");
+$result = $conn->query("SELECT name, price,category, image_path FROM jerseys ORDER BY id DESC");
 
 $jerseys = [];
 if ($result && $result->num_rows > 0) {
@@ -59,13 +59,14 @@ if ($result && $result->num_rows > 0) {
         $jerseys[] = [
             'name' => $row['name'],
             'price' => $row['price'],
+            'category' => $row['category'],
             'image' => $row['image_path']
         ];
     }
 }
 ?>
 
-?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -203,7 +204,7 @@ if ($result && $result->num_rows > 0) {
 
 <header>
     <div>
-        ⚽️ European Football Jersey Store
+        ⚽️ JAIRO SPORTS WEAR
         <?php if (!empty($_SESSION['cart'])): ?>
             <span class="cart-count"><?php echo count($_SESSION['cart']); ?> in Cart</span>
         <?php endif; ?>
@@ -222,6 +223,7 @@ if ($result && $result->num_rows > 0) {
                 <img src="<?php echo htmlspecialchars($jersey['image']); ?>" alt="<?php echo htmlspecialchars($jersey['name']); ?>" />
                 <h3><?php echo htmlspecialchars($jersey['name']); ?></h3>
                 <div class="price">KSH <?php echo number_format($jersey['price'], 2); ?></div>
+                 <h3><?php echo htmlspecialchars($jersey['category']); ?></h3>
                 <div class="buttons">
                     <form method="post" style="flex: 1; margin-right: 6px;">
                         <input type="hidden" name="name" value="<?php echo htmlspecialchars($jersey['name']); ?>">

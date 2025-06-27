@@ -9,19 +9,24 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch summarized orders per jersey for the user
+// Handle delete request for a single record
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'])) {
+    $order_id = intval($_POST['order_id']);
+    $delete_stmt = $conn->prepare("DELETE FROM orders WHERE id = ? AND users_id = ?");
+    $delete_stmt->bind_param("ii", $order_id, $user_id);
+    $delete_stmt->execute();
+    $delete_stmt->close();
+    header("Location: orders.php");
+    exit();
+}
+
+// Fetch all individual orders for this user with category info
 $stmt = $conn->prepare("
-    SELECT 
-        jersey_id,
-        name,
-        image_path,
-        SUM(price) AS total_price,
-        COUNT(*) AS quantity,
-        MAX(created_at) AS last_ordered
-    FROM orders
-    WHERE users_id = ?
-    GROUP BY jersey_id, name, image_path
-    ORDER BY last_ordered DESC
+    SELECT o.id, o.jersey_id, o.name, o.price, o.image_path, o.created_at, j.category
+    FROM orders o
+    JOIN jerseys j ON o.jersey_id = j.id
+    WHERE o.users_id = ?
+    ORDER BY o.created_at DESC
 ");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -98,11 +103,24 @@ $result = $stmt->get_result();
             margin-top: 80px;
             color: #777;
         }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 <body>
 
-<h2>🛒 My Jersey Orders Summary</h2>
+<h2>🛒 My Jersey Orders</h2>
 
 <div class="top-bar">
     <a href="dashboard.php">Go Back</a>
@@ -112,26 +130,33 @@ $result = $stmt->get_result();
     <table>
         <tr>
             <th>#</th>
+            <th>S/No.</th>
             <th>Jersey</th>
             <th>Image</th>
-            <th>Quantity</th>
-            <th>Total Price (KSH)</th>
-            <th>Last Ordered</th>
+            <th>Price</th>
+            <th>Ordered At</th>
+            <th>Action</th>
         </tr>
         <?php $count = 1; ?>
         <?php while ($order = $result->fetch_assoc()): ?>
-        <tr>
-            <td><?php echo $count++; ?></td>
-            <td><?php echo htmlspecialchars($order['name']); ?></td>
-            <td><img src="<?php echo htmlspecialchars($order['image_path']); ?>" alt="<?php echo htmlspecialchars($order['name']); ?>"></td>
-            <td><?php echo $order['quantity']; ?></td>
-            <td><?php echo number_format($order['total_price'], 2); ?></td>
-            <td><?php echo date("F j, Y, g:i a", strtotime($order['last_ordered'])); ?></td>
-        </tr>
+            <tr>
+                <td><?= $count++ ?></td>
+                <td><?= htmlspecialchars($order['category']) ?></td>
+                <td><?= htmlspecialchars($order['name']) ?></td>
+                <td><img src="<?= htmlspecialchars($order['image_path']) ?>" alt="<?= htmlspecialchars($order['name']) ?>"></td>
+                <td>KSH <?= number_format($order['price'], 2) ?></td>
+                <td><?= date("F j, Y, g:i a", strtotime($order['created_at'])) ?></td>
+                <td>
+                    <form method="POST" onsubmit="return confirm('Delete this order?');">
+                        <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </td>
+            </tr>
         <?php endwhile; ?>
     </table>
 <?php else: ?>
-    <div class="empty-message">You haven't ordered any jerseys yet.</div>
+    <div class="empty-message">You haven't placed any orders yet.</div>
 <?php endif; ?>
 
 </body>

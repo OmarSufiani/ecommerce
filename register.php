@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm = $_POST['confirm'];
     $role = 'user'; // Default role
 
-    // Basic validations
     if (empty($username) || empty($email) || empty($password) || empty($confirm)) {
         $error = "All fields are required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -20,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($password !== $confirm) {
         $error = "Passwords do not match.";
     } else {
-        // Check if username or email already exists
         $check = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
         $check->bind_param("ss", $username, $email);
         $check->execute();
@@ -29,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($check->num_rows > 0) {
             $error = "Username or email is already taken.";
         } else {
-            // Hash and insert
             $hashed = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
             $stmt->bind_param("ssss", $username, $email, $hashed, $role);
@@ -53,20 +50,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Register | Jerzy Store</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
             font-family: 'Segoe UI', sans-serif;
-            background-color: #ecf0f1;
+            background: url('images/jairo.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.4); /* dark overlay */
+            z-index: 0;
         }
 
         .form-container {
-            background-color: #fff;
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.96);
             padding: 40px 30px;
             border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 400px;
         }
@@ -90,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         button {
             width: 100%;
             padding: 12px;
-            background-color: #27ae60;
+            background-color: #2980b9;
             color: white;
             border: none;
             font-size: 16px;
@@ -99,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         button:hover {
-            background-color: #2ecc71;
+            background-color:#3498db;
         }
 
         .error {
@@ -127,6 +142,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .footer a:hover {
             text-decoration: underline;
         }
+
+        @media (max-height: 600px) {
+            body {
+                align-items: flex-start;
+            }
+        }
     </style>
 </head>
 <body>
@@ -137,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($error): ?>
         <p class="error"><?= htmlspecialchars($error) ?></p>
     <?php elseif ($success): ?>
-        <p class="success"><?= $success ?></p>
+        <p class="success"><?= htmlspecialchars($success) ?></p>
     <?php endif; ?>
 
     <form method="POST">
