@@ -81,7 +81,7 @@ if ($result && $result->num_rows > 0) {
             margin: 0;
             background: #f9f9f9;
         }
-        header {
+ header {
             position: sticky;
             top: 0;
             background-color: #2a9d8f;
@@ -95,20 +95,19 @@ if ($result && $result->num_rows > 0) {
             justify-content: space-between;
             align-items: center;
         }
-        .logout-btn {
-            background-color: rgb(245, 35, 35);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 1em;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
+
+.logout-btn {
+    text-decoration: none;
+    color: white;
+    background-color: #ff4d4d;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+       
         .logout-btn:hover {
-            background-color: #d62828;
+            background-color: green;
         }
         .store {
             display: flex;
@@ -198,19 +197,41 @@ if ($result && $result->num_rows > 0) {
             margin-left: 10px;
             color: white;
         }
+                .logout-btn {
+            text-decoration: none;
+            color: white;
+            background-color: #ff4d4d;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .nav-btn {
+            text-decoration: none;
+            color: white;
+            background-color: #3498db;
+            padding: 8px 12px;
+            border-radius: 2px;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            background-color: #2980b9;
+        }
+
+
     </style>
 </head>
 <body>
-
 <header>
-    <div>
-        ⚽️ JAIRO SPORTS WEAR
-        <?php if (!empty($_SESSION['cart'])): ?>
-            <span class="cart-count"><?php echo count($_SESSION['cart']); ?> in Cart</span>
-        <?php endif; ?>
-    </div>
-    <a href="logout.php" class="logout-btn">Logout</a>
+    ⚽️ JAIRO SPORTS WEAR
+    <nav style="display: flex; gap: 10px;">
+        <a href="orders.php" class="nav-btn">View My Cart</a>
+        <a href="logout.php" class="logout-btn">Logout</a>
+    </nav>
 </header>
+
+
+
 
 <?php if (!empty($message)): ?>
     <div class="message"><?php echo htmlspecialchars($message); ?></div>
