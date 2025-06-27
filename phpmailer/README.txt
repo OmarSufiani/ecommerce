@@ -1,0 +1,1 @@
+Add PHPMailer files here: PHPMailer.php, SMTP.php, Exception.php

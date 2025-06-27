@@ -117,8 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="name">Jersey Name</label>
         <input type="text" name="name" id="name" placeholder="e.g. Manchester United Home Kit" required>
 
-        <label for="category">Category</label>
-        <input type="text" name="category" id="category" placeholder="e.g. Football" required>
+        <label for="category">Serial/No.</label>
+        <input type="text" name="category" id="category" placeholder="e.g. XPHY00K" required>
 
         <label for="price">Price (Ksh)</label>
         <input type="number" name="price" id="price" placeholder="e.g. 1500" step="0.01" required>

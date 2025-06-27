@@ -160,7 +160,7 @@ $total_pages = ceil($total / $limit);
     <tr>
         <th>#</th>
         <th>Name</th>
-        <th>Category</th>
+        <th>Serial/No</th>
         <th>Price (Ksh)</th>
         <th>Action</th>
     </tr>
