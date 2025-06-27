@@ -2,7 +2,7 @@
 include '../db.php';
 
 session_start();
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['username'])) {
     header("Location: ../index.php");
     exit();
 }
@@ -154,6 +154,7 @@ $total_pages = ceil($total / $limit);
 <div class="top-bar">
     <a href="add.php">➕ Add Jersey</a>
     <a href="orders1.php">All orders</a>
+     <a href="add1.php">Add Users</a>
 </div>
 
 <table>
