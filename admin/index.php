@@ -155,6 +155,7 @@ $total_pages = ceil($total / $limit);
     <a href="add.php">➕ Add Jersey</a>
     <a href="orders1.php">All orders</a>
      <a href="add1.php">Add Users</a>
+     <a href="payment1.php">Payments</a>
 </div>
 
 <table>

@@ -3,12 +3,16 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once '../PHPMailer/Exception.php';
-require_once '../PHPMailer/PHPMailer.php';
-require_once '../PHPMailer/SMTP.php';
+
+require_once '../phpmailer/Exception.php';
+require_once '../phpmailer/PHPMailer.php';
+require_once '../phpmailer/SMTP.php';
+
+
 
 include '../db.php';
 session_start();
@@ -38,12 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ship_order'], $_POST[
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
-            $mail->setFrom('hommiedelaco@gmail.com', 'Jersey Store');
+            $mail->setFrom('hommiedelaco@gmail.com', 'JAIRO SORTS WEAR');
             $mail->addAddress($email);
 
             $mail->isHTML(true);
             $mail->Subject = 'Order Shipped!';
-            $mail->Body = 'Hello! Your jersey order is now <strong>being shipped</strong>. Thank you for shopping with us.';
+            $mail->Body = 'Hello! Your jersey order is now <strong>being shipped</strong>. Thank you for shopping with us.For more infor contact +254703805049';
 
             $mail->send();
             $success = "Shipping email sent successfully!";
@@ -73,6 +77,7 @@ $sql = "SELECT orders.id AS order_id, users.username, users.email, jerseys.name 
         FROM orders
         JOIN users ON orders.users_id = users.id
         JOIN jerseys ON orders.jersey_id = jerseys.id
+        
         WHERE orders.status = 'submitted'
         ORDER BY orders.created_at DESC";
 
@@ -237,11 +242,12 @@ $result = $conn->query($sql);
 <?php if ($result && $result->num_rows > 0): ?>
     <table>
         <tr>
-            <th>#</th>
+            <th>Order ID</th>
             <th>User</th>
             <th>Email</th>
             <th>Jersey</th>
-            <th>Category</th>
+             <th>Image</th>
+            <th>Serial/No.</th>
             <th>Quantity</th>
             <th>Total Price (KSH)</th>
             <th>Ordered On</th>
@@ -249,13 +255,21 @@ $result = $conn->query($sql);
         </tr>
         <?php $i = 1; while ($row = $result->fetch_assoc()): ?>
         <tr>
-            <td><?= $i++ ?></td>
+            <td><?= htmlspecialchars($row['order_id']) ?></td>
             <td><?= htmlspecialchars($row['username']) ?></td>
             <td><?= htmlspecialchars($row['email']) ?></td>
             <td><?= htmlspecialchars($row['jersey_name']) ?></td>
+            
+           <td>
+    <img src="<?= '../images/' . htmlspecialchars(basename($row['image_path'])) ?>" 
+         alt="<?= htmlspecialchars($row['jersey_name']) ?>" 
+         width="70">
+</td>
+
             <td><?= htmlspecialchars($row['category']) ?></td>
             <td><?= $row['quantity'] ?></td>
             <td><?= number_format($row['price'] * $row['quantity'], 2) ?></td>
+            
             <td><?= date('d M Y, H:i', strtotime($row['created_at'])) ?></td>
             <td>
                 <div class="actions">

@@ -71,10 +71,10 @@ $conn->close();
 
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+    background: linear-gradient(135deg,white 0%,rgb(245, 246, 250) 100%);
     margin: 0;
     padding: 40px 20px 60px;
-    color: #2c3e50;
+    color:rgb(240, 242, 245);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -201,8 +201,8 @@ $conn->close();
     margin: 0 auto 30px;
     padding: 40px 35px 35px;
     border-radius: 20px;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.1);
-    background: linear-gradient(145deg, #f0f4f8, #d9e2ec);
+    box-shadow: 0 10px 35px white (248, 242, 242, 0.1);
+    background: linear-gradient(145deg, teal);
     display: none;
   }
 
@@ -211,7 +211,7 @@ $conn->close();
     font-weight: 700;
     text-align: center;
     letter-spacing: 1.5px;
-    color: #34495e;
+    color: white;
   }
 
   form label {
