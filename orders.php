@@ -42,9 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'])) {
 
 // Fetch all orders for this user with category info
 $stmt = $conn->prepare("
-    SELECT o.id, o.jersey_id, o.name, o.price, o.image_path, o.created_at, o.status, j.category
+    SELECT o.id, o.jersey_id, o.name,u.username, o.price, o.image_path, o.created_at, o.status, j.category
     FROM orders o
     JOIN jerseys j ON o.jersey_id = j.id
+     JOIN users u ON o.users_id= u.id
     WHERE o.users_id = ?
     ORDER BY o.created_at DESC
 ");
@@ -71,12 +72,15 @@ $result = $stmt->get_result();
             text-align: center;
             color: #2a9d8f;
         }
+     
         .top-bar {
             max-width: 900px;
             margin: 20px auto;
             display: flex;
             justify-content: flex-end;
+            gap: 10px;
         }
+
         .top-bar a {
             background-color: #27ae60;
             color: #fff;
@@ -86,6 +90,7 @@ $result = $stmt->get_result();
             font-size: 15px;
             transition: background-color 0.3s ease;
         }
+
         .top-bar a:hover {
             background-color: #2ecc71;
         }
@@ -163,13 +168,15 @@ $result = $stmt->get_result();
 
 <div class="top-bar">
     <a href="dashboard.php">Go Back</a>
+    <a href="payment.php">Confirm Payment</a>
 </div>
 
 <?php if ($result->num_rows > 0): ?>
     <table>
         <tr>
-            <th>#</th>
-            <th>Category</th>
+            <th>order ID</th>
+             <th>User</th>
+            <th> Jersey Serial/No.</th>
             <th>Jersey</th>
             <th>Image</th>
             <th>Price</th>
@@ -180,7 +187,8 @@ $result = $stmt->get_result();
         <?php $count = 1; ?>
         <?php while ($order = $result->fetch_assoc()): ?>
             <tr>
-                <td><?= $count++ ?></td>
+                 <td><?= htmlspecialchars($order['id']) ?></td>
+                 <td><?= htmlspecialchars($order['username']) ?></td>
                 <td><?= htmlspecialchars($order['category']) ?></td>
                 <td><?= htmlspecialchars($order['name']) ?></td>
                 <td><img src="<?= htmlspecialchars($order['image_path']) ?>" alt="<?= htmlspecialchars($order['name']) ?>"></td>
@@ -196,7 +204,7 @@ $result = $stmt->get_result();
                 </td>
                 <td>
                     <?php if ($order['status'] === 'pending'): ?>
-                        <form method="POST" onsubmit="return confirm('Do You want to make  order?');">
+                        <form method="POST" onsubmit="return confirm('Do You want to make this order?');">
                             <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
                             <button type="submit" name="make_order" class="make-order-btn">Make Order</button>
                         </form>
